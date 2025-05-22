@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c286adf5c1a1498cbd48e2f25a3e0e57, type: 3}
+  m_Name: Build Worker
+  m_EditorClassIdentifier: 
+  <Icon>k__BackingField: {fileID: 21300000, guid: 6e40afd6361ffe44a87846d98dd04e7c,
+    type: 3}
+  <Slot>k__BackingField: 0
+  <RequiresClickToActivate>k__BackingField: 0
+  <Unit>k__BackingField: {fileID: 11400000, guid: a59fcbf629f1f1e478f1bc4a1d5b1596,
+    type: 2}

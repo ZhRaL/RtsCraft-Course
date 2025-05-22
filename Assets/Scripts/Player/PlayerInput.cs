@@ -66,7 +66,15 @@ namespace Player
         private void HandleUnitDeselected(UnitDeselectedEvent args) => selectedUnits.Remove(args.Unit);
 
         private void HandleUnitSpawn(UnitSpawnEvent args) => aliveUnits.Add(args.Unit);
-        private void HandleActionSelected(ActionSelectedEvent evt) => activeAction = evt.Action;
+
+        private void HandleActionSelected(ActionSelectedEvent evt)
+        {
+            activeAction = evt.Action;
+            if (!activeAction.RequiresClickToActivate)
+            {
+                ActivateAction(new RaycastHit());
+            }
+        }
 
 
         // Update is called once per frame
@@ -99,7 +107,7 @@ namespace Player
 
         private void HandleMouseUp()
         {
-            if (activeAction == null && !Keyboard.current.shiftKey.isPressed)
+            if (!wasMouseDownOnUi && activeAction == null && !Keyboard.current.shiftKey.isPressed)
                 DeselectAllUnits();
             HandleLeftClick();
             foreach (AUnit unit in addedUnits)
@@ -112,8 +120,8 @@ namespace Player
 
         private void HandleMouseDrag()
         {
-            if(activeAction != null || wasMouseDownOnUi) return;
-            
+            if (activeAction != null || wasMouseDownOnUi) return;
+
             Bounds selectionBoxBounds = ResizeSelectionBox();
             foreach (AUnit unit in aliveUnits)
             {
@@ -204,20 +212,25 @@ namespace Player
             }
             else if (activeAction != null
                      && !EventSystem.current.IsPointerOverGameObject()
-                     && Physics.Raycast(cameraRay, out hit,float.MaxValue, floorLayers))
+                     && Physics.Raycast(cameraRay, out hit, float.MaxValue, floorLayers))
             {
-                List<AUnit> abstractUnits = selectedUnits
-                    .Where((unit) => unit is AUnit)
-                    .Cast<AUnit>()
-                    .ToList();
-                for (int i = 0; i < abstractUnits.Count; i++)
-                {
-                    CommandContext context = new(abstractUnits[i], hit, i);
-                    activeAction.Handle(context);
-                }
-
-                activeAction = null;
+                ActivateAction(hit);
             }
+        }
+
+        private void ActivateAction(RaycastHit hit)
+        {
+            List<ACommandable> abstractCommandables = selectedUnits
+                .Where((unit) => unit is ACommandable)
+                .Cast<ACommandable>()
+                .ToList();
+            for (int i = 0; i < abstractCommandables.Count; i++)
+            {
+                CommandContext context = new(abstractCommandables[i], hit, i);
+                activeAction.Handle(context);
+            }
+
+            activeAction = null;
         }
 
         private void HandleRotation()
